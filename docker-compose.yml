@@ -1,0 +1,37 @@
+version: '3'
+services:
+  app:
+    build: .
+    ports:
+      - 3000:3000
+      - 8080:8080
+    volumes:
+      - .:/profile_ver2
+      - profile_ver2_bundle:/usr/local/bundle:cached
+      - profile_ver2_vender:/profile_ver2/vendor
+      - profile_ver2_temp:/profile_ver2/tmp
+      - profile_ver2_log:/profile_ver2/log
+      - profile_ver2_git:/profile_ver2/.git
+      - profile_ver2_node_module:/profile_ver2/frontend/node_modules
+    stdin_open: true
+    tty: true
+    command: /bin/sh -c "bundle install; rm -f /profile_ver2/tmp/pids/server.pid; rails s -b 0.0.0.0 -p 3000"
+    depends_on:
+      - db
+  db:
+    image: postgres:10.1
+    environment:
+      - "POSTGRES_USER=root"
+      - "POSTGRES_PASSWORD=root"
+    ports:
+      - 5432:5432
+    volumes:
+      - profile_ver2_db_data:/var/lib/postgresql/data
+volumes:
+  profile_ver2_bundle:
+  profile_ver2_vender:
+  profile_ver2_temp:
+  profile_ver2_log:
+  profile_ver2_git:
+  profile_ver2_node_module:
+  profile_ver2_db_data:
